@@ -12,7 +12,7 @@
     zig = {
       url = "github:mitchellh/zig-overlay";
       inputs = {
-        nixpkgs.follows = "nixpkgs-stable";
+        nixpkgs.follows = "nixpkgs-unstable";
         flake-compat.follows = "";
       };
     };
@@ -29,9 +29,9 @@
       pkgs-stable = nixpkgs-stable.legacyPackages.${system};
       pkgs-unstable = nixpkgs-unstable.legacyPackages.${system};
     in {
-      devShell.${system} = pkgs-stable.callPackage ./nix/devShell.nix {
+      devShell.${system} = pkgs-unstable.callPackage ./nix/devShell.nix {
         zig = zig.packages.${system}."0.13.0";
-        wraptest = pkgs-stable.callPackage ./nix/wraptest.nix {};
+        wraptest = pkgs-unstable.callPackage ./nix/wraptest.nix {};
       };
 
       packages.${system} = let
@@ -41,15 +41,15 @@
           revision = self.shortRev or self.dirtyShortRev or "dirty";
         };
       in rec {
-        ghostty-debug = pkgs-stable.callPackage ./nix/package.nix (mkArgs "Debug");
-        ghostty-releasesafe = pkgs-stable.callPackage ./nix/package.nix (mkArgs "ReleaseSafe");
-        ghostty-releasefast = pkgs-stable.callPackage ./nix/package.nix (mkArgs "ReleaseFast");
+        ghostty-debug = pkgs-unstable.callPackage ./nix/package.nix (mkArgs "Debug");
+        ghostty-releasesafe = pkgs-unstable.callPackage ./nix/package.nix (mkArgs "ReleaseSafe");
+        ghostty-releasefast = pkgs-unstable.callPackage ./nix/package.nix (mkArgs "ReleaseFast");
 
         ghostty = ghostty-releasefast;
         default = ghostty;
       };
 
-      formatter.${system} = pkgs-stable.alejandra;
+      formatter.${system} = pkgs-unstable.alejandra;
 
       # Our supported systems are the same supported systems as the Zig binaries.
     }) (builtins.attrNames zig.packages));
